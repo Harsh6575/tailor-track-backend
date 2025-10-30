@@ -1,26 +1,149 @@
-# Tailor Track
+# 🧵 Tailor Track Backend
 
-## Common commit types
+A modern and scalable backend service built with **Node.js**, **Express**, **TypeScript**, and **Drizzle ORM**.  
+Includes complete developer tooling — linting, formatting, testing, and commit conventions — for a clean and maintainable workflow.
 
-| Type     | Purpose                                               |
-| -------- | ----------------------------------------------------- |
-| feat     | A new feature                                         |
-| fix      | A bug fix                                             |
-| chore    | Build process, tooling, or maintenance                |
-| refactor | Code changes that neither fix a bug nor add a feature |
-| docs     | Documentation changes only                            |
-| style    | Code style (formatting, missing semicolons, etc.)     |
-| test     | Adding or improving tests                             |
-| perf     | Performance improvements                              |
+---
 
-## Save Docs
+## 🚀 Tech Stack
+
+- **Runtime:** Node.js (ESM)
+- **Language:** TypeScript
+- **Framework:** Express
+- **ORM:** Drizzle ORM (PostgreSQL / SQLite)
+- **Database Driver:** Better SQLite3
+- **Validation:** Zod
+- **Auth:** JSON Web Tokens (JWT)
+- **Testing:** Vitest + Supertest
+- **Linting & Formatting:** ESLint + Prettier
+- **Git Hooks:** Husky + Lint-Staged
+- **Commit Messages:** Commitizen + Commitlint
+- **Logging:** Winston
+
+---
+
+## ⚙️ Project Setup
+
+### 1. Clone the Repository
 
 ```bash
-pnpm exec tsx src/config/swagger.ts > swagger.json
+git clone https://github.com/harsh6575tailor-track-backend.git
+cd tailor-track-backend
 ```
 
-## Make sure the file is executable
+### 2. Install Dependencies
 
 ```bash
-chmod +x .husky/pre-commit
+pnpm install
 ```
+
+### 3. Setup Environment Variables
+
+Create a .env file in the project root:
+
+```bash
+PORT=3000
+JWT_SECRET=your_secret_key
+DATABASE_URL=file:./dev.db
+```
+
+---
+
+## 🧩 Available Scripts
+
+| Command               | Description                              |
+| --------------------- | ---------------------------------------- |
+| pnpm dev              | Start the server in watch mode using tsx |
+| pnpm build            | Build the project with TypeScript        |
+| pnpm start            | Run the compiled server from dist/       |
+| pnpm lint             | Lint and fix code with ESLint            |
+| pnpm lint:check       | Check lint issues without fixing         |
+| pnpm format           | Format code using Prettier               |
+| pnpm test             | Run all tests using Vitest               |
+| pnpm test:watch       | Run tests in watch mode                  |
+| pnpm test:coverage    | Run tests with coverage report           |
+| pnpm drizzle:generate | Generate SQL migrations using Drizzle    |
+| pnpm drizzle:migrate  | Push database migrations                 |
+| pnpm drizzle:studio   | Open Drizzle Studio for DB visualization |
+
+---
+
+## 🧠 Testing
+
+We use **Vitest and Supertest** for testing.
+
+Example test (`src/__tests__/app.test.ts`):
+
+```javascript
+import { describe, it, expect } from "vitest";
+import request from "supertest";
+import app from "../server";
+
+describe("GET /", () => {
+  it("should return 200 OK", async () => {
+    const res = await request(app).get("/");
+    expect(res.status).toBe(200);
+  });
+});
+```
+
+Run tests:
+
+```bash
+pnpm test
+```
+
+---
+
+## 🧹 Code Quality
+
+- ESLint – catches errors and enforces consistent code style
+- Prettier – automatically formats your code
+- Husky + Lint-Staged – runs checks before each commit
+- Commitizen + Commitlint – ensures conventional commits
+
+Commit example:
+
+```bash
+pnpm commit
+# e.g., feat(auth): add token refresh endpoint
+```
+
+---
+
+## 🗂️ Project Structure
+
+```lua
+tailor-track-backend/
+├── src/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── db/
+│   ├── utils/
+│   └── server.ts
+├── drizzle.config.ts
+├── tsconfig.json
+├── vitest.config.ts
+├── .eslintrc.ts
+├── .prettierrc
+├── .husky/
+└── package.json
+```
+
+---
+
+## 🧵 License
+
+This project is licensed under the ISC License.
+
+---
+
+## 👨‍💻 Author
+
+Harsh Vansjaliya
+Software Developer
+[🔗 Portfolio](https://harsh-vansjaliya.vercel.app)
+
+[📧 harshvansjliaya3@gmail.com](mailto:harshvansjaliya3@gmail.com)
