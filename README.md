@@ -18,3 +18,9 @@
 ```bash
 pnpm exec tsx src/config/swagger.ts > swagger.json
 ```
+
+## Make sure the file is executable
+
+```bash
+chmod +x .husky/pre-commit
+```
