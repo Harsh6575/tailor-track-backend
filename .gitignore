@@ -1,0 +1,49 @@
+# ----------------------------
+# Node / TypeScript backend
+# ----------------------------
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*.local
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Drizzle ORM
+.drizzle/
+
+# Editor / OS junk
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# Coverage / testing
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+
+# Husky
+.husky/_/
