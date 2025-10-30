@@ -1,13 +1,18 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
+set -e  # stop on error
 
-echo "🧹 Running lint, format check, and type-check before commit..."
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+YELLOW="\033[1;33m"
+NC="\033[0m" # No Color
+
+echo "${YELLOW}🧹 Running lint, format check, and type-check before commit...${NC}"
 pnpm lint
 pnpm format:check
 pnpm type-check
+echo "${GREEN}✅ All checks passed!${NC}"
 
-echo "✅ All checks passed!"
-
-echo "running tests..."
+echo "${YELLOW}🧪 Running tests...${NC}"
 pnpm test
-echo "✅ All tests passed!"
+echo "${GREEN}✅ All tests passed!${NC}"
