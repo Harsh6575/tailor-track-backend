@@ -1,40 +1,48 @@
 import dotenv from "dotenv";
 import app from "./app.js";
+import logger from "./utils/logger.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  logger.info(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-// Graceful shutdown
+// Graceful shutdown handler
 const gracefulShutdown = (signal: string) => {
-  console.log(`\n${signal} received. Closing server...`);
+  logger.warn(`${signal} received. Closing server...`);
 
   server.close(() => {
-    console.log("✅ Server closed gracefully");
+    logger.info("✅ Server closed gracefully");
     process.exit(0);
   });
 
-  // Force close after 10s
+  // Force close after 10 seconds if something hangs
   setTimeout(() => {
-    console.error("❌ Forced shutdown after timeout");
+    logger.error("❌ Forced shutdown after timeout");
     process.exit(1);
   }, 10_000);
 };
 
+// Handle termination signals
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
-// Catch unhandled errors
+// Handle uncaught errors
 process.on("uncaughtException", (err) => {
-  console.error("💥 Uncaught Exception:", err);
+  logger.error("💥 Uncaught Exception:", {
+    message: err.message,
+    stack: err.stack,
+  });
   process.exit(1);
 });
 
+// Handle unhandled promise rejections
 process.on("unhandledRejection", (reason) => {
-  console.error("💥 Unhandled Rejection:", reason);
+  logger.error("💥 Unhandled Rejection:", {
+    reason,
+  });
   process.exit(1);
 });
