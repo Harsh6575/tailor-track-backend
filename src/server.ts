@@ -54,3 +54,6 @@ process.on("unhandledRejection", (reason) => {
   });
   process.exit(1);
 });
+
+// Export server for testing purposes
+export default server;
