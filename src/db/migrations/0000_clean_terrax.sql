@@ -15,7 +15,6 @@ CREATE TABLE "users" (
 	"email" varchar(120) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"phone" varchar(20),
-	"is_active" boolean DEFAULT true NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint

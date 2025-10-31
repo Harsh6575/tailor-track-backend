@@ -6,6 +6,14 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
+// console.log("🧩 DB ENV:", {
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   user: process.env.POSTGRES_USER,
+//   password: process.env.POSTGRES_PASSWORD,
+//   database: process.env.POSTGRES_DB,
+// });
+
 const server = app.listen(PORT, () => {
   logger.info(`🚀 Server running on http://localhost:${PORT}`);
 });

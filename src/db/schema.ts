@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 // 🧱 Base fields shared by all tables
@@ -19,7 +19,6 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 120 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 20 }),
-  isActive: boolean("is_active").default(true).notNull(),
 });
 
 // 🔐 Refresh Tokens table
