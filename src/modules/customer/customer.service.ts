@@ -2,6 +2,7 @@ import { db } from "../../config/db.js";
 import { customers, measurements, users } from "../../db/schema.js";
 import { and, eq } from "drizzle-orm";
 import logger from "../../utils/logger.js";
+import { Errors } from "../../utils/AppError.js";
 
 export const CustomerService = {
   // 👤 Create new customer
@@ -14,14 +15,14 @@ export const CustomerService = {
     address?: string
   ) {
     const [userExists] = await db.select().from(users).where(eq(users.id, userId));
-    if (!userExists) throw new Error("User not found");
+    if (!userExists) throw Errors.NotFound("User not found");
 
     const existing = await db
       .select()
       .from(customers)
       .where(and(eq(customers.userId, userId), eq(customers.fullName, fullName)));
 
-    if (existing.length > 0) throw new Error("Customer already exists for this user");
+    if (existing.length > 0) throw Errors.Conflict("Customer already exists for this user");
 
     const [customer] = await db
       .insert(customers)
@@ -38,14 +39,14 @@ export const CustomerService = {
     return list;
   },
 
-  // 👤 Get one customer (only if owned)
+  // 👤 Get one customer (with measurements)
   async getCustomerWithMeasurements(userId: string, customerId: string) {
     const [customer] = await db
       .select()
       .from(customers)
       .where(and(eq(customers.id, customerId), eq(customers.userId, userId)));
 
-    if (!customer) throw new Error("Customer not found or not authorized");
+    if (!customer) throw Errors.NotFound("Customer not found or not authorized");
 
     const customerMeasurements = await db
       .select()
@@ -55,7 +56,7 @@ export const CustomerService = {
     return { customer, measurements: customerMeasurements };
   },
 
-  // ✏️ Update customer (only if owned)
+  // ✏️ Update customer
   async updateCustomer(
     userId: string,
     customerId: string,
@@ -72,7 +73,7 @@ export const CustomerService = {
       .from(customers)
       .where(and(eq(customers.id, customerId), eq(customers.userId, userId)));
 
-    if (!customer) throw new Error("Customer not found or not authorized");
+    if (!customer) throw Errors.Forbidden("Not authorized to update this customer");
 
     const [updated] = await db
       .update(customers)
@@ -84,22 +85,22 @@ export const CustomerService = {
     return updated;
   },
 
-  // 🗑️ Delete customer (only if owned)
+  // 🗑️ Delete customer
   async deleteCustomer(userId: string, customerId: string) {
     const [customer] = await db
       .select()
       .from(customers)
       .where(and(eq(customers.id, customerId), eq(customers.userId, userId)));
 
-    if (!customer) throw new Error("Customer not found or not authorized");
+    if (!customer) throw Errors.Forbidden("Not authorized to delete this customer");
 
     await db.delete(customers).where(eq(customers.id, customerId));
     logger.info(`🗑️ Customer deleted: ${customer.fullName}`);
 
-    return { success: true };
+    return { success: true, message: "Customer deleted successfully" };
   },
 
-  // 📏 Add measurement (only if customer owned)
+  // 📏 Add measurement
   async addMeasurement(
     userId: string,
     customerId: string,
@@ -112,7 +113,7 @@ export const CustomerService = {
       .from(customers)
       .where(and(eq(customers.id, customerId), eq(customers.userId, userId)));
 
-    if (!customer) throw new Error("Customer not found or not authorized");
+    if (!customer) throw Errors.Forbidden("Not authorized to add measurement for this customer");
 
     const [measurement] = await db
       .insert(measurements)
@@ -123,7 +124,7 @@ export const CustomerService = {
     return measurement;
   },
 
-  // ✏️ Update measurement (only if belongs to user)
+  // ✏️ Update measurement
   async updateMeasurement(
     userId: string,
     measurementId: string,
@@ -134,13 +135,15 @@ export const CustomerService = {
       .select()
       .from(measurements)
       .where(eq(measurements.id, measurementId));
-    if (!measurement) throw new Error("Measurement not found");
+
+    if (!measurement) throw Errors.NotFound("Measurement not found");
 
     const [customer] = await db
       .select()
       .from(customers)
       .where(and(eq(customers.id, measurement.customerId), eq(customers.userId, userId)));
-    if (!customer) throw new Error("Not authorized to modify this measurement");
+
+    if (!customer) throw Errors.Forbidden("Not authorized to modify this measurement");
 
     const [updated] = await db
       .update(measurements)
@@ -152,39 +155,43 @@ export const CustomerService = {
     return updated;
   },
 
-  // 🗑️ Delete measurement (only if belongs to user)
+  // 🗑️ Delete measurement
   async deleteMeasurement(userId: string, measurementId: string) {
     const [measurement] = await db
       .select()
       .from(measurements)
       .where(eq(measurements.id, measurementId));
-    if (!measurement) throw new Error("Measurement not found");
+
+    if (!measurement) throw Errors.NotFound("Measurement not found");
 
     const [customer] = await db
       .select()
       .from(customers)
       .where(and(eq(customers.id, measurement.customerId), eq(customers.userId, userId)));
-    if (!customer) throw new Error("Not authorized to delete this measurement");
+
+    if (!customer) throw Errors.Forbidden("Not authorized to delete this measurement");
 
     await db.delete(measurements).where(eq(measurements.id, measurementId));
     logger.info(`🗑️ Measurement deleted: ${measurement.id}`);
 
-    return { success: true };
+    return { success: true, message: "Measurement deleted successfully" };
   },
 
-  // 🔍 Get measurement by ID (only if belongs to user)
+  // 🔍 Get measurement by ID
   async getMeasurementById(userId: string, measurementId: string) {
     const [measurement] = await db
       .select()
       .from(measurements)
       .where(eq(measurements.id, measurementId));
-    if (!measurement) throw new Error("Measurement not found");
+
+    if (!measurement) throw Errors.NotFound("Measurement not found");
 
     const [customer] = await db
       .select()
       .from(customers)
       .where(and(eq(customers.id, measurement.customerId), eq(customers.userId, userId)));
-    if (!customer) throw new Error("Not authorized to view this measurement");
+
+    if (!customer) throw Errors.Forbidden("Not authorized to view this measurement");
 
     return measurement;
   },

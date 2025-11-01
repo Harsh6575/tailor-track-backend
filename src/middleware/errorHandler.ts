@@ -5,7 +5,7 @@ import logger from "../utils/logger.js";
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   let statusCode = 500;
   let code = "INTERNAL_ERROR";
-  let message = "Internal Server Error";
+  let message = "Internal server error";
   let meta: Record<string, unknown> | undefined;
   let stack: string | undefined;
 
@@ -16,24 +16,30 @@ export const errorHandler = (err: unknown, _req: Request, res: Response, _next: 
     meta = err.meta;
     stack = err.stack;
   } else if (err instanceof Error) {
+    // Non-AppError but still a valid JS error
     message = err.message;
     stack = err.stack;
+  } else {
+    // Handle weird cases like throwing non-error values
+    message = "Unknown error occurred";
   }
 
+  // 🚨 Log full details (always)
   logger.error("💥 Error occurred", {
-    statusCode,
-    message,
     code,
-    meta,
-    stack,
+    message,
+    statusCode,
+    ...(meta && { meta }),
+    ...(stack && { stack }),
   });
 
+  // 🧊 Send response
   res.status(statusCode).json({
     success: false,
     error: {
       code,
       message,
-      ...(process.env.NODE_ENV === "development" && {
+      ...(process.env.NODE_ENV !== "production" && {
         stack,
         meta,
       }),
