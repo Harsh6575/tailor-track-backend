@@ -26,6 +26,7 @@ export const UserService = {
         fullName: data.fullName,
         email: data.email,
         password: hashedPassword,
+        phone: data.phone,
       })
       .returning({
         id: users.id,
