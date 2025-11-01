@@ -1,4 +1,7 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+
+const envPath = process.env.ENV_PATH || ".env";
+dotenv.config({ path: envPath });
 
 export const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
