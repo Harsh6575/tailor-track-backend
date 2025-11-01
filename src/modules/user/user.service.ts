@@ -40,10 +40,10 @@ export const UserService = {
   // 🔑 Login user
   async loginUser(data: LoginInput) {
     const [user] = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
-    if (!user) throw Errors.Unauthorized("Invalid email or password");
+    if (!user) throw Errors.Unauthorized("Invalid credentials");
 
     const isValid = await comparePassword(data.password, user.password);
-    if (!isValid) throw Errors.Unauthorized("Invalid email or password");
+    if (!isValid) throw Errors.Unauthorized("Invalid credentials");
 
     const { accessToken, refreshToken } = generateTokens({
       userId: user.id,
