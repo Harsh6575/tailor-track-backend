@@ -1,0 +1,10 @@
+CREATE INDEX "customers_user_id_idx" ON "customers" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "customers_full_name_idx" ON "customers" USING btree ("full_name");--> statement-breakpoint
+CREATE INDEX "customers_phone_idx" ON "customers" USING btree ("phone");--> statement-breakpoint
+CREATE INDEX "measurements_customer_id_idx" ON "measurements" USING btree ("customer_id");--> statement-breakpoint
+CREATE INDEX "measurements_type_idx" ON "measurements" USING btree ("type");--> statement-breakpoint
+CREATE INDEX "user_tokens_user_id_idx" ON "user_tokens" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "user_tokens_expires_at_idx" ON "user_tokens" USING btree ("expires_at");--> statement-breakpoint
+CREATE INDEX "users_full_name_idx" ON "users" USING btree ("full_name");--> statement-breakpoint
+CREATE INDEX "users_phone_idx" ON "users" USING btree ("phone");--> statement-breakpoint
+CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");

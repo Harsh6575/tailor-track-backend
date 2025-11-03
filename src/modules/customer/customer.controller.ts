@@ -27,8 +27,13 @@ export const getCustomersByUserId = async (req: Request, res: Response, next: Ne
   try {
     if (!req.user) throw Errors.Unauthorized("User not authenticated");
 
-    const customers = await CustomerService.getCustomersByUserId(req.user.id);
-    res.status(200).json({ success: true, customers });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = req.query.search as string | undefined;
+
+    const result = await CustomerService.getCustomersByUserId(req.user.id, page, limit, search);
+
+    res.status(200).json({ success: true, ...result });
   } catch (err) {
     next(err);
   }
@@ -75,6 +80,42 @@ export const deleteCustomer = async (req: Request, res: Response, next: NextFunc
     const { id } = req.params;
     const result = await CustomerService.deleteCustomer(req.user.id, id);
     res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// 👤 Create customer and add measurements at same time
+export const createCustomerWithMeasurements = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) throw Errors.Unauthorized("Not authenticated");
+
+    const { measurements, ...customerData } = req.body;
+
+    // 1️⃣ Create customer
+    const customer = await CustomerService.createCustomer(
+      req.user.id,
+      customerData.fullName,
+      customerData.email,
+      customerData.phone,
+      customerData.gender,
+      customerData.address
+    );
+
+    // 2️⃣ Add measurements
+    if (measurements && Array.isArray(measurements)) {
+      await Promise.all(
+        measurements.map((m) =>
+          CustomerService.addMeasurement(req.user!.id, customer.id, m.type, m.data, m.notes)
+        )
+      );
+    }
+
+    res.status(201).json({ success: true, customer });
   } catch (err) {
     next(err);
   }
