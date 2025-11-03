@@ -10,6 +10,6 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction) =
   const token = authHeader.split(" ")[1];
   const payload = verifyAccessToken(token);
 
-  req.user = payload; // extend Express.Request type if needed
+  req.user = { id: payload.userId, email: payload.email }; // extend Express.Request type if needed
   next();
 };
