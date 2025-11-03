@@ -5,7 +5,7 @@ import logger from "../utils/logger.js";
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   let statusCode = 500;
   let code = "INTERNAL_ERROR";
-  let message = "Internal server error";
+  let message: string;
   let meta: Record<string, unknown> | undefined;
   let stack: string | undefined;
 

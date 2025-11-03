@@ -1,0 +1,14 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+dist
+
+# Local dev
+.env.local
+.env.development
+.vscode
+.git
+.gitignore
+Dockerfile*
+docker-compose*
