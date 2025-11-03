@@ -27,8 +27,13 @@ export const getCustomersByUserId = async (req: Request, res: Response, next: Ne
   try {
     if (!req.user) throw Errors.Unauthorized("User not authenticated");
 
-    const customers = await CustomerService.getCustomersByUserId(req.user.id);
-    res.status(200).json({ success: true, customers });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = req.query.search as string | undefined;
+
+    const result = await CustomerService.getCustomersByUserId(req.user.id, page, limit, search);
+
+    res.status(200).json({ success: true, ...result });
   } catch (err) {
     next(err);
   }

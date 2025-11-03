@@ -1,6 +1,6 @@
 import { db } from "../../config/db.js";
 import { customers, measurements, users } from "../../db/schema.js";
-import { and, eq } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, SQL } from "drizzle-orm";
 import logger from "../../utils/logger.js";
 import { Errors } from "../../utils/AppError.js";
 
@@ -34,11 +34,53 @@ export const CustomerService = {
   },
 
   // 👤 Get all customers owned by a user
-  async getCustomersByUserId(userId: string) {
-    const list = await db.select().from(customers).where(eq(customers.userId, userId));
-    return list;
-  },
+  async getCustomersByUserId(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+    search?: string
+  ) {
+    const offset = (page - 1) * limit;
 
+    // Build where conditions properly
+    const baseCondition = eq(customers.userId, userId);
+
+    const whereCondition =
+      search && search.trim()
+        ? and(
+            baseCondition,
+            or(
+              ilike(customers.fullName, `%${search.trim()}%`),
+              ilike(customers.phone, `%${search.trim()}%`)
+            )
+          )
+        : baseCondition;
+
+    // Get paginated results
+    const list = await db
+      .select()
+      .from(customers)
+      .where(whereCondition)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(desc(customers.createdAt));
+
+    // Get total count for pagination
+    const countResult = await db.select({ total: count() }).from(customers).where(whereCondition);
+
+    const totalCount = Number(countResult[0]?.total || 0);
+
+    return {
+      customers: list,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    };
+  },
+  
   // 👤 Get one customer (with measurements)
   async getCustomerWithMeasurements(userId: string, customerId: string) {
     const [customer] = await db
