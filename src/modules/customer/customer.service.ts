@@ -1,6 +1,6 @@
 import { db } from "../../config/db.js";
 import { customers, measurements, users } from "../../db/schema.js";
-import { and, count, desc, eq, ilike, or, SQL } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import logger from "../../utils/logger.js";
 import { Errors } from "../../utils/AppError.js";
 
@@ -80,7 +80,7 @@ export const CustomerService = {
       },
     };
   },
-  
+
   // 👤 Get one customer (with measurements)
   async getCustomerWithMeasurements(userId: string, customerId: string) {
     const [customer] = await db
