@@ -20,7 +20,7 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
-    "prepare": "husky",
+    "prepare": "if [ \"$HUSKY\" != \"0\" ]; then husky; fi",
     "commit": "cz",
     "pre-commit": "sh .husky/pre-commit"
   },

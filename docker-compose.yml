@@ -36,6 +36,20 @@ services:
     networks:
       - tailor_network
 
+  api:
+    build: .
+    container_name: tailor_backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tailor_network
+
 volumes:
   postgres_data:
   pgadmin_data:
