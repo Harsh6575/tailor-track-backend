@@ -80,6 +80,42 @@ export const deleteCustomer = async (req: Request, res: Response, next: NextFunc
   }
 };
 
+// 👤 Create customer and add measurements at same time
+export const createCustomerWithMeasurements = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) throw Errors.Unauthorized("Not authenticated");
+
+    const { measurements, ...customerData } = req.body;
+
+    // 1️⃣ Create customer
+    const customer = await CustomerService.createCustomer(
+      req.user.id,
+      customerData.fullName,
+      customerData.email,
+      customerData.phone,
+      customerData.gender,
+      customerData.address
+    );
+
+    // 2️⃣ Add measurements
+    if (measurements && Array.isArray(measurements)) {
+      await Promise.all(
+        measurements.map((m) =>
+          CustomerService.addMeasurement(req.user!.id, customer.id, m.type, m.data, m.notes)
+        )
+      );
+    }
+
+    res.status(201).json({ success: true, customer });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // 📏 Add measurement for a customer
 export const addMeasurement = async (req: Request, res: Response, next: NextFunction) => {
   try {

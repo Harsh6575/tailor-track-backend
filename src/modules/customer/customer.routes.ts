@@ -9,6 +9,7 @@ import {
   getMeasurementById,
   updateMeasurement,
   deleteMeasurement,
+  createCustomerWithMeasurements,
 } from "./customer.controller.js";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { authenticate } from "../../middleware/authenticate.js";
@@ -24,6 +25,8 @@ router.get("/", catchAsync(getCustomersByUserId));
 router.get("/:id", catchAsync(getCustomer));
 router.put("/:id", catchAsync(updateCustomer));
 router.delete("/:id", catchAsync(deleteCustomer));
+
+router.post("/with-measurements", catchAsync(createCustomerWithMeasurements));
 
 // 📏 Measurements
 router.post("/measurements", catchAsync(addMeasurement));
