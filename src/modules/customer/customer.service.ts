@@ -99,7 +99,12 @@ export const CustomerService = {
       .from(measurements)
       .where(eq(measurements.customerId, customerId));
 
-    return { customer, measurements: customerMeasurements };
+    return {
+      customer: {
+        ...customer,
+        measurements: customerMeasurements,
+      },
+    };
   },
 
   // ✏️ Update customer
