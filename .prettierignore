@@ -9,3 +9,5 @@ build
 .DS_Store
 
 migrations/
+
+src/__tests__/setup.ts

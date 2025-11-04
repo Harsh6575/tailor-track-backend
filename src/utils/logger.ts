@@ -19,10 +19,18 @@ const logFormat = winston.format.combine(
   })
 );
 
+// Filter out error logs in test environment
+const testFilter = winston.format((info) => {
+  if (process.env.NODE_ENV === "test" && info.level === "error") {
+    return false; // Don't log errors in test mode
+  }
+  return info;
+});
+
 // Create Winston logger
 const logger = winston.createLogger({
   level: process.env.NODE_ENV === "production" ? "info" : "debug",
-  format: logFormat,
+  format: winston.format.combine(testFilter(), logFormat),
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(winston.format.colorize(), winston.format.simple()),

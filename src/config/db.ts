@@ -1,14 +1,18 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../db/schema.js";
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+import logger from "../utils/logger.js";
+
+const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+
+logger.info(`[DB] Loaded environment: ${envFile}`);
+logger.info(`[DB] Using database URL: ${process.env.DATABASE_URL}`);
 
 const pool = new Pool({
-  host: process.env.DB_HOST || "localhost",
-  port: Number(process.env.DB_PORT) || 5432,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB,
+  connectionString: process.env.DATABASE_URL,
 });
 
 export const db = drizzle(pool, { schema });
