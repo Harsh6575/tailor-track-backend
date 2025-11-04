@@ -67,7 +67,6 @@ export const UserService = {
   },
 
   // ♻️ Refresh token
-  // TODO: when logout delete access token from client side too
   async refreshToken(token: string) {
     const payload = verifyRefreshToken(token);
 

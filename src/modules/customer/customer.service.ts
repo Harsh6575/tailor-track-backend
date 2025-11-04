@@ -45,16 +45,15 @@ export const CustomerService = {
     // Build where conditions properly
     const baseCondition = eq(customers.userId, userId);
 
-    const whereCondition =
-      search && search.trim()
-        ? and(
-            baseCondition,
-            or(
-              ilike(customers.fullName, `%${search.trim()}%`),
-              ilike(customers.phone, `%${search.trim()}%`)
-            )
+    const whereCondition = search?.trim()
+      ? and(
+          baseCondition,
+          or(
+            ilike(customers.fullName, `%${search.trim()}%`),
+            ilike(customers.phone, `%${search.trim()}%`)
           )
-        : baseCondition;
+        )
+      : baseCondition;
 
     // Get paginated results
     const list = await db
