@@ -20,10 +20,17 @@ describe("Auth Routes", () => {
   });
 
   afterAll(async () => {
-    // Clean up all test users
-    await db.delete(users).where(eq(users.email, testUser.email));
-    await db.delete(users).where(eq(users.email, "duplicate@example.com"));
-    await app.close();
+    await db.delete(users).where(eq(users.email, testUser.email)).execute();
+    await db.delete(users).where(eq(users.email, "duplicate@example.com")).execute();
+
+    if (typeof app.close === "function") {
+      await new Promise<void>((resolve, reject) => {
+        app.close((err?: Error) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
   });
 
   let refreshToken: string;
