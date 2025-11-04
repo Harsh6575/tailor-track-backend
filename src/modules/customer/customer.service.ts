@@ -61,7 +61,7 @@ export const CustomerService = {
       .select({
         id: customers.id,
         fullName: customers.fullName,
-        email: customers.email,
+        phone: customers.phone,
       })
       .from(customers)
       .where(whereCondition)
