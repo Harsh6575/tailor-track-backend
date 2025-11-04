@@ -58,7 +58,11 @@ export const CustomerService = {
 
     // Get paginated results
     const list = await db
-      .select()
+      .select({
+        id: customers.id,
+        fullName: customers.fullName,
+        phone: customers.phone,
+      })
       .from(customers)
       .where(whereCondition)
       .limit(limit)
@@ -95,7 +99,12 @@ export const CustomerService = {
       .from(measurements)
       .where(eq(measurements.customerId, customerId));
 
-    return { customer, measurements: customerMeasurements };
+    return {
+      customer: {
+        ...customer,
+        measurements: customerMeasurements,
+      },
+    };
   },
 
   // ✏️ Update customer

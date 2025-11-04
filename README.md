@@ -41,10 +41,26 @@ pnpm install
 
 Create a .env file in the project root:
 
-```bash
-PORT=3000
-JWT_SECRET=your_secret_key
-DATABASE_URL=file:./dev.db
+```env
+NODE_ENV=production
+PORT=4000
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=tailor_db
+
+PGADMIN_DEFAULT_EMAIL=admin@tailortrack.com
+PGADMIN_DEFAULT_PASSWORD=admin
+
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+
+
+ACCESS_TOKEN_SECRET=Jwt_secret_1
+REFRESH_TOKEN_SECRET=Jwt_secret_2
+ACCESS_TOKEN_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
+
+CORS_ORIGIN=http://localhost:3000
 ```
 
 ---
