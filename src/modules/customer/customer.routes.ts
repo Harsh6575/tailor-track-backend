@@ -95,7 +95,7 @@ router.get("/", catchAsync(getCustomersByUserId));
  *         description: Unauthorized
  *       404:
  *         description: User not found
- *       429:
+ *       409:
  *         description: Customer already exists for this user
  */
 router.post("/", catchAsync(createCustomer));
