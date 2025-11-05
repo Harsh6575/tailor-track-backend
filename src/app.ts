@@ -6,6 +6,7 @@ import routes from "./router/index.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import morganLogger from "./middleware/morganLogger.js";
+import { setupSwagger } from "./config/swagger.js";
 
 const app = express();
 
@@ -33,6 +34,9 @@ app.get("/health", (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// swagger-docs
+setupSwagger(app);
 
 app.use("/api", routes);
 
